@@ -1,53 +1,123 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useState } from 'react'
 
-export const TopicsContext = createContext<{
+export interface TopicsContextValue {
   allTopics?: any[]
-  currentTopic?: CurrentTopic
-  selectTopic?: (id: string) => void
-}>({})
+  currentTopic?: TopicState
+  selectTopic?: (id: string, current: TopicState) => void
+  goBack?: (current: TopicState) => void
+  startQuestionnaire?: () => void
+  cancelQuestionnaire?: () => void
+  saveQuestionAnswer?: (
+    current: TopicState,
+    questionId: string,
+    answer: 'A' | 'B' | 'C'
+  ) => void
+}
 
-interface CurrentTopic {
+export const TopicsContext = createContext<TopicsContextValue>({})
+
+interface Topic {
   id: string
-  previousParentId?: null | string
   description?: string
-  children: any[]
+  children: string[]
   resources?: any[]
+  questions: any[] | null
+  startedQuestionnaire?: boolean
 }
 
-const initialTopic: CurrentTopic = {
-  id: 'initial',
+type TopicState = Topic & { previousParents: string[] }
+
+const initialTopic: Topic = {
+  id: 'development',
   description: 'Select which area  you want to dive in.',
-  children: [{ id: 'frontend' }, { id: 'fullstack' }],
+  children: ['frontend', 'fullstack'],
+  questions: null,
 }
 
-export default function TopicsProvider({
+export function TopicsProvider({
   children,
   topics,
 }: {
   topics: any[]
   children: React.ReactNode
 }) {
-  const [allTopics] = useState([
-    ...topics,
-    { ...initialTopic, previousParentId: null },
-  ])
-  const [currentTopic, setCurrentTopic] = useState(initialTopic)
+  const [allTopics] = useState([...topics, initialTopic])
+  const [currentTopic, setCurrentTopic] = useState<TopicState>({
+    ...initialTopic,
+    previousParents: [],
+  })
 
-  const selectTopic = (id: string) => {
+  const selectTopic = (id: string, current: TopicState) => {
+    if (!id) return
+
     const selectedTopic = allTopics.find((topic) => topic.id === id)
 
     setCurrentTopic({
       id,
-      previousParentId: currentTopic.id,
+      previousParents: current.previousParents.concat([current.id]),
       children: selectedTopic.children,
       description: selectedTopic.description,
       resources: selectedTopic.resources,
+      questions: selectedTopic.questions,
     })
   }
+
+  const goBack = (current: TopicState) => {
+    if (!current.previousParents.length) return
+
+    const parent = current.previousParents.pop()
+
+    const selectedTopic = allTopics.find((topic) => topic.id === parent)
+
+    setCurrentTopic({
+      id: selectedTopic.id,
+      previousParents: current.previousParents,
+      children: selectedTopic.children,
+      description: selectedTopic.description,
+      resources: selectedTopic.resources,
+      questions: selectedTopic.questions,
+    })
+  }
+
+  const startQuestionnaire = () => {
+    setCurrentTopic({ ...currentTopic, startedQuestionnaire: true })
+  }
+
+  const cancelQuestionnaire = () => {
+    setCurrentTopic({ ...currentTopic, startedQuestionnaire: false })
+  }
+
+  const saveQuestionAnswer = (
+    current: TopicState,
+    questionId: string,
+    answer: 'A' | 'B' | 'C'
+  ) => {
+    const { questions } = current
+
+    if (questions) {
+      setCurrentTopic({
+        ...current,
+        questions: questions.map((q) =>
+          q.id === questionId ? { ...q, answer } : q
+        ),
+      })
+    }
+  }
+
   return (
-    <TopicsContext.Provider value={{ allTopics, currentTopic, selectTopic }}>
+    <TopicsContext.Provider
+      value={{
+        allTopics,
+        currentTopic,
+        selectTopic,
+        goBack,
+        startQuestionnaire,
+        cancelQuestionnaire,
+        saveQuestionAnswer,
+      }}
+    >
       {children}
     </TopicsContext.Provider>
   )

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { getAllTopics } from '../../topics'
-import TopicsProvider from '@/components/TopicProvider'
+import { TopicsProvider } from '../components'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} flex flex-col`}>
         <TopicsProvider
           topics={[
             ...getAllTopics(),
@@ -42,7 +42,10 @@ export default function RootLayout({
             },
           ]}
         >
-          <div className="flex justify-center items-center">{children}</div>
+          <div className="flex bg-black text-white items-center justify-start h-[60px] pl-[5px]">
+            <span className="">Questionnaire App</span>
+          </div>
+          <div className="flex main">{children}</div>
         </TopicsProvider>
       </body>
     </html>

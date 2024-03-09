@@ -1,13 +1,15 @@
 'use client'
-import { useContext } from 'react'
-import { TopicsContext } from '../components/TopicProvider'
+import { QuestionnaireContainer, RecommendationsContainer } from '../components'
 
 export default function Home() {
-  const { currentTopic, selectTopic, allTopics } = useContext(TopicsContext)
-  console.log(allTopics, length)
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Questionnaire
-    </main>
+    <div className="main-container">
+      <div className="main-left">
+        <QuestionnaireContainer />
+      </div>
+      <div className="main-right">
+        <RecommendationsContainer />
+      </div>
+    </div>
   )
 }
