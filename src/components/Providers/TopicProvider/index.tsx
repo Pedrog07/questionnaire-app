@@ -3,12 +3,13 @@
 import { createContext, useState } from 'react'
 
 export interface TopicsContextValue {
-  allTopics?: any[]
   currentTopic?: TopicState
   selectTopic?: (id: string, current: TopicState) => void
   goBack?: (current: TopicState) => void
   startQuestionnaire?: () => void
   cancelQuestionnaire?: () => void
+  completeQuestionnaire?: () => void
+  resetQuestionnaire?: (current: TopicState) => void
   saveQuestionAnswer?: (
     current: TopicState,
     questionId: string,
@@ -23,8 +24,9 @@ interface Topic {
   description?: string
   children: string[]
   resources?: any[]
-  questions: any[] | null
+  questions?: any[]
   startedQuestionnaire?: boolean
+  isCompleted?: boolean
 }
 
 type TopicState = Topic & { previousParents: string[] }
@@ -33,7 +35,6 @@ const initialTopic: Topic = {
   id: 'development',
   description: 'Select which area  you want to dive in.',
   children: ['frontend', 'fullstack'],
-  questions: null,
 }
 
 export function TopicsProvider({
@@ -43,14 +44,22 @@ export function TopicsProvider({
   topics: any[]
   children: React.ReactNode
 }) {
-  const [allTopics] = useState([...topics, initialTopic])
+  const [allTopics, setAllTopics] = useState([...topics, initialTopic])
   const [currentTopic, setCurrentTopic] = useState<TopicState>({
     ...initialTopic,
     previousParents: [],
   })
 
+  const refreshAllTopics = (current: TopicState) => {
+    setAllTopics(
+      allTopics.map((topic) => (topic.id === current.id ? current : topic))
+    )
+  }
+
   const selectTopic = (id: string, current: TopicState) => {
     if (!id) return
+
+    refreshAllTopics(current)
 
     const selectedTopic = allTopics.find((topic) => topic.id === id)
 
@@ -89,6 +98,26 @@ export function TopicsProvider({
     setCurrentTopic({ ...currentTopic, startedQuestionnaire: false })
   }
 
+  const completeQuestionnaire = () => {
+    setCurrentTopic({
+      ...currentTopic,
+      isCompleted: true,
+      startedQuestionnaire: false,
+    })
+  }
+
+  const resetQuestionnaire = (current: TopicState) => {
+    setCurrentTopic({
+      ...current,
+      isCompleted: false,
+      startedQuestionnaire: true,
+      questions: current.questions?.map((question) => ({
+        ...question,
+        answer: undefined,
+      })),
+    })
+  }
+
   const saveQuestionAnswer = (
     current: TopicState,
     questionId: string,
@@ -109,13 +138,14 @@ export function TopicsProvider({
   return (
     <TopicsContext.Provider
       value={{
-        allTopics,
         currentTopic,
         selectTopic,
         goBack,
         startQuestionnaire,
         cancelQuestionnaire,
         saveQuestionAnswer,
+        completeQuestionnaire,
+        resetQuestionnaire,
       }}
     >
       {children}

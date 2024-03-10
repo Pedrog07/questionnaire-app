@@ -15,9 +15,17 @@ const config: Config = {
       '2xl': '30px',
     },
     extend: {
-      backgroundImage: {},
+      backgroundColor: {},
+      colors: {
+        primary: '#3f6212D9',
+        secondary: 'white',
+        option: '#3f621233',
+        correct: '#3f6212B3',
+        wrong: '#f87171',
+      },
     },
   },
   plugins: [],
+  safelist: [{ pattern: /(bg)-(option|correct|wrong)/ }],
 }
 export default config
