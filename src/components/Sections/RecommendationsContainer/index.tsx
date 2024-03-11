@@ -5,7 +5,7 @@ import { Button, TopicsContext } from '../..'
 export const RecommendationsContainer = () => {
   const router = useRouter()
   const pathname = usePathname()
-  const { currentTopic, goBack, selectTopic } = useContext(TopicsContext)
+  const { currentTopic } = useContext(TopicsContext)
   return (
     <div className="flex flex-col w-full">
       {!!currentTopic?.previousParents.length && (
@@ -13,8 +13,9 @@ export const RecommendationsContainer = () => {
           type="secondary"
           classes="max-w-[50%]"
           onClick={() => {
-            router.back()
-            //goBack!(currentTopic!)
+            const path = pathname.split('/')
+            path.pop()
+            router.push(path.join('/'))
           }}
         >
           go back
@@ -32,7 +33,6 @@ export const RecommendationsContainer = () => {
               classes="mt-4"
               onClick={() => {
                 router.push(`${pathname}/${child}`)
-                //selectTopic!(child, currentTopic)
               }}
             >
               {child}

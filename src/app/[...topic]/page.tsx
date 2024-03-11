@@ -1,32 +1,24 @@
-'use client'
-import { useContext, useEffect } from 'react'
-import {
-  QuestionnaireContainer,
-  RecommendationsContainer,
-  TopicsContext,
-} from '../../components'
+import { getAllTopics } from '@/topics'
+import Main from './main'
 
 export default function Home({ params }: { params: { topic: string[] } }) {
-  const { currentTopic, selectTopic } = useContext(TopicsContext)
-
-  const { startedQuestionnaire = false } = currentTopic!
-
-  useEffect(() => {
-    const topics = [...params.topic]
-    selectTopic!(topics.pop()!, currentTopic!, topics)
-  }, [params])
   return (
     <div className="main-container">
-      <div
-        className={`main-left transition-[width] duration-300 ${
-          startedQuestionnaire ? 'w-full ' : ''
-        }`}
-      >
-        <QuestionnaireContainer />
-      </div>
-      <div className={`main-right ${startedQuestionnaire ? 'hidden' : ''}`}>
-        <RecommendationsContainer />
-      </div>
+      <Main params={params} />
     </div>
   )
+}
+
+export async function generateStaticParams() {
+  const topics = getAllTopics()
+  return [
+    {
+      topic: [
+        ...topics.map((topic) => topic.id),
+        'frontend',
+        'fullstack',
+        'development',
+      ],
+    },
+  ]
 }

@@ -1,8 +1,19 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  async redirects() {
-    return [{ source: '/', destination: '/development', permanent: false }]
-  },
-}
+const nextConfig = {}
 
-export default nextConfig
+export default (phase, { defaultConfig }) => {
+  if (phase === 'phase-development-server') {
+    return {
+      ...defaultConfig,
+      async redirects() {
+        return [{ source: '/', destination: '/development', permanent: false }]
+      },
+    }
+  }
+
+  return {
+    ...defaultConfig,
+    output: 'export',
+    basePath: '/questionnaire-app',
+  }
+}
