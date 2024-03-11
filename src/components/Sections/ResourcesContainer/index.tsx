@@ -9,7 +9,11 @@ export const ResourcesContainer = ({
         <ul style={{ listStyleType: 'disc' }}>
           {resources.map((resource, index) => (
             <li key={index}>
-              <a target="_blank" href={resource.link}>
+              <a
+                target="_blank"
+                className="hover:text-[purple]"
+                href={resource.link}
+              >
                 {resource.name}
               </a>
             </li>

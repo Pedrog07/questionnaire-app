@@ -31,17 +31,20 @@ export const QuestionsContainer = () => {
 
   const saveAnswer = (questionId: string, answer: 'A' | 'B' | 'C') => {
     saveQuestionAnswer!(currentTopic!, questionId, answer)
-
-    setCurrentQuestion({
-      position: currentQuestion.position,
-      data: { ...currentQuestion.data, answer },
-    })
   }
 
   const getQuestionBg = (answer: string, options: any) => {
     const selectedOption = options.find((option: any) => option.label === answer)
 
     return selectedOption.points > 0 ? 'bg-correct' : 'bg-wrong'
+  }
+
+  const getAnswerExplanation = (question: any) => {
+    const option = question?.options?.find(
+      (option: any) => option.label === question.answer
+    )
+
+    return option?.explanation || ''
   }
 
   const nextQuestion = () => {
@@ -62,9 +65,7 @@ export const QuestionsContainer = () => {
     if (!questions.some((question) => !question.answer)) {
       setFinishedQuestionnaire(true)
     } else {
-      setTimeout(() => {
-        setCurrentQuestion(getClosestUnansweredQuestion(questions))
-      }, 500)
+      setCurrentQuestion(getClosestUnansweredQuestion(questions))
     }
   }, [questions])
 
@@ -72,7 +73,7 @@ export const QuestionsContainer = () => {
     <div className="flex flex-col">
       {finishedQuestionnaire || currentTopic?.isCompleted ? (
         <div className="flex mt-6">
-          <div className="flex w-6/12 flex-col">
+          <div className="flex w-6/12 flex-col p-4">
             <p className="text-xl">Results:</p>
             {questions.map((question, index) => (
               <p
@@ -82,12 +83,16 @@ export const QuestionsContainer = () => {
                   question.options
                 )} p-2`}
               >
+                {index + 1}
+                {') '}
                 {question.question}
+                <br />
+                <strong>{getAnswerExplanation(question)}</strong>
               </p>
             ))}
           </div>
           <div className="flex w-6/12 p-4 flex-col items-center">
-            <p className="text-xl mt-8">
+            <p className="text-xl">
               {
                 questions.filter(
                   (question: any) =>
@@ -102,7 +107,7 @@ export const QuestionsContainer = () => {
 
             <div className="flex justify-evenly mt-6 w-full">
               <Button
-                classes="max-w-[150px] ]"
+                classes="max-w-[150px]"
                 type="primary"
                 onClick={() => {
                   resetQuestionnaire!(currentTopic!)
@@ -112,7 +117,7 @@ export const QuestionsContainer = () => {
                 YES
               </Button>
               <Button
-                classes="max-w-[150px] ]"
+                classes="max-w-[150px]"
                 type="secondary"
                 onClick={() => {
                   completeQuestionnaire!()

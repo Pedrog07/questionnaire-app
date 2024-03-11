@@ -1,19 +1,25 @@
 import { useContext } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { Button, TopicsContext } from '../..'
 
 export const RecommendationsContainer = () => {
+  const router = useRouter()
+  const pathname = usePathname()
   const { currentTopic, goBack, selectTopic } = useContext(TopicsContext)
   return (
     <div className="flex flex-col w-full">
-      <Button
-        type="secondary"
-        classes="max-w-[50%]"
-        onClick={() => {
-          goBack!(currentTopic!)
-        }}
-      >
-        go back
-      </Button>
+      {!!currentTopic?.previousParents.length && (
+        <Button
+          type="secondary"
+          classes="max-w-[50%]"
+          onClick={() => {
+            router.back()
+            //goBack!(currentTopic!)
+          }}
+        >
+          go back
+        </Button>
+      )}
 
       {!!currentTopic?.children?.length ? (
         <>
@@ -25,7 +31,8 @@ export const RecommendationsContainer = () => {
               type="primary"
               classes="mt-4"
               onClick={() => {
-                selectTopic!(child, currentTopic)
+                router.push(`${pathname}/${child}`)
+                //selectTopic!(child, currentTopic)
               }}
             >
               {child}

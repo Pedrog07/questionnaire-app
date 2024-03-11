@@ -1,14 +1,20 @@
 'use client'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import {
   QuestionnaireContainer,
   RecommendationsContainer,
   TopicsContext,
-} from '../components'
+} from '../../components'
 
-export default function Home() {
-  const { currentTopic: { startedQuestionnaire = false } = {} } =
-    useContext(TopicsContext)
+export default function Home({ params }: { params: { topic: string[] } }) {
+  const { currentTopic, selectTopic } = useContext(TopicsContext)
+
+  const { startedQuestionnaire = false } = currentTopic!
+
+  useEffect(() => {
+    const topics = [...params.topic]
+    selectTopic!(topics.pop()!, currentTopic!, topics)
+  }, [params])
   return (
     <div className="main-container">
       <div

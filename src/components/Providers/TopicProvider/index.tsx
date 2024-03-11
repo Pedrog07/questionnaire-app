@@ -1,10 +1,11 @@
 'use client'
 
 import { createContext, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export interface TopicsContextValue {
   currentTopic?: TopicState
-  selectTopic?: (id: string, current: TopicState) => void
+  selectTopic?: (id: string, current: TopicState, previousParents: string[]) => void
   goBack?: (current: TopicState) => void
   startQuestionnaire?: () => void
   cancelQuestionnaire?: () => void
@@ -44,6 +45,7 @@ export function TopicsProvider({
   topics: any[]
   children: React.ReactNode
 }) {
+  const router = useRouter()
   const [allTopics, setAllTopics] = useState([...topics, initialTopic])
   const [currentTopic, setCurrentTopic] = useState<TopicState>({
     ...initialTopic,
@@ -56,21 +58,29 @@ export function TopicsProvider({
     )
   }
 
-  const selectTopic = (id: string, current: TopicState) => {
+  const selectTopic = (
+    id: string,
+    current: TopicState,
+    previousParents: string[]
+  ) => {
     if (!id) return
 
     refreshAllTopics(current)
 
     const selectedTopic = allTopics.find((topic) => topic.id === id)
 
-    setCurrentTopic({
-      id,
-      previousParents: current.previousParents.concat([current.id]),
-      children: selectedTopic.children,
-      description: selectedTopic.description,
-      resources: selectedTopic.resources,
-      questions: selectedTopic.questions,
-    })
+    if (!selectedTopic) {
+      router.push('/' + current.id)
+    } else {
+      setCurrentTopic({
+        id,
+        previousParents,
+        children: selectedTopic.children,
+        description: selectedTopic.description,
+        resources: selectedTopic.resources,
+        questions: selectedTopic.questions,
+      })
+    }
   }
 
   const goBack = (current: TopicState) => {

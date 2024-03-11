@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { getAllTopics } from '../../topics'
+import { getAllTopics } from '../topics'
 import { TopicsProvider } from '../components'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -43,7 +44,9 @@ export default function RootLayout({
           ]}
         >
           <div className="flex bg-black text-white items-center justify-start h-[60px] pl-[5px]">
-            <span className="">Questionnaire App</span>
+            <Link href={'/'} className="">
+              Questionnaire App
+            </Link>
           </div>
           <div className="flex main">{children}</div>
         </TopicsProvider>

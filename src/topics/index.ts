@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import path from 'path'
 
 export function getAllTopics() {
-  let dirPath = path.resolve(__dirname, '../../../topics')
+  let dirPath = path.join(process.cwd(), 'src/topics')
 
   const topics: any[] = []
 
