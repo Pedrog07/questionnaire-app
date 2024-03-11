@@ -5,9 +5,9 @@ export default (phase, { defaultConfig }) => {
   if (phase === 'phase-development-server') {
     return {
       ...defaultConfig,
-      async redirects() {
-        return [{ source: '/', destination: '/development', permanent: false }]
-      },
+      // async redirects() {
+      //   return [{ source: '/', destination: '/development', permanent: false }]
+      // },
     }
   }
 

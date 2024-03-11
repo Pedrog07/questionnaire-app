@@ -29,6 +29,7 @@ export default function RootLayout({
               children: [
                 'css',
                 'html',
+                'javascript',
                 'package-managers',
                 'pick-a-framework',
                 'vcs-hosting',
