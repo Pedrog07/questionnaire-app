@@ -3,8 +3,12 @@ import { Button, QuestionsContainer, ResourcesContainer, TopicsContext } from '.
 import { capitalize } from '@/utils'
 
 export const QuestionnaireContainer = () => {
-  const { currentTopic, startQuestionnaire, cancelQuestionnaire } =
-    useContext(TopicsContext)
+  const {
+    currentTopic,
+    startQuestionnaire,
+    cancelQuestionnaire,
+    switchManualQuestionnaire,
+  } = useContext(TopicsContext)
   return (
     <div className="flex flex-col w-full">
       <div className="flex justify-between items-center">
@@ -20,7 +24,15 @@ export const QuestionnaireContainer = () => {
             Cancel
           </Button>
         ) : (
-          <></>
+          <Button
+            type="primary"
+            classes="max-w-[150px]"
+            onClick={() => {
+              switchManualQuestionnaire!()
+            }}
+          >
+            Upload file
+          </Button>
         )}
       </div>
 
