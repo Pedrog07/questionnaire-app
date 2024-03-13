@@ -22,6 +22,8 @@ export const QuestionsContainer = () => {
     saveQuestionAnswer,
     completeQuestionnaire,
     resetQuestionnaire,
+    manualQuestionnaire,
+    switchManualQuestionnaire,
   } = useContext(TopicsContext)
   const { questions = [] } = currentTopic!
   const [currentQuestion, setCurrentQuestion] = useState(
@@ -120,6 +122,7 @@ export const QuestionsContainer = () => {
                 classes="max-w-[150px]"
                 type="secondary"
                 onClick={() => {
+                  manualQuestionnaire && switchManualQuestionnaire!()
                   completeQuestionnaire!()
                 }}
               >
