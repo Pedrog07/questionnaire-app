@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useState } from 'react'
-import { Button, TopicsContext } from '../..'
+import { Button, ResourcesContainer, TopicsContext } from '../..'
 import { Question } from './Question'
 
 const getClosestUnansweredQuestion = (questions: any[]) => {
@@ -129,6 +129,11 @@ export const QuestionsContainer = () => {
                 NO
               </Button>
             </div>
+
+            <ResourcesContainer
+              resources={currentTopic?.resources}
+              title="Do you want to learn more? Take a look to these links"
+            />
           </div>
         </div>
       ) : (
