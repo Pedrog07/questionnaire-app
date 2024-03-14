@@ -1,4 +1,9 @@
-import { Button, TopicsContext, QuestionsContainer } from '@/components'
+import {
+  Button,
+  TopicsContext,
+  QuestionsContainer,
+  QuestionnaireDescription,
+} from '@/components'
 import { capitalize } from '@/utils'
 import { useContext, useState } from 'react'
 
@@ -48,7 +53,11 @@ export const ManualQuestionnaire = () => {
       {fileUploaded ? (
         <div className="flex w-full p-[20px] flex-col">
           <h1 className="text-2xl font-bold">{capitalize(currentTopic!.id)}</h1>
-          <QuestionsContainer />
+          {currentTopic?.startedQuestionnaire ? (
+            <QuestionsContainer />
+          ) : (
+            <QuestionnaireDescription />
+          )}
         </div>
       ) : (
         <div className="flex p-6 flex-col items-center">

@@ -1,5 +1,10 @@
 import { useContext } from 'react'
-import { Button, QuestionsContainer, ResourcesContainer, TopicsContext } from '../..'
+import {
+  Button,
+  QuestionnaireDescription,
+  QuestionsContainer,
+  TopicsContext,
+} from '../..'
 import { capitalize } from '@/utils'
 
 export const QuestionnaireContainer = () => {
@@ -37,25 +42,7 @@ export const QuestionnaireContainer = () => {
       </div>
 
       {!currentTopic?.startedQuestionnaire ? (
-        <>
-          <p className="mt-4 text-lg">{currentTopic?.description}</p>
-
-          <ResourcesContainer resources={currentTopic?.resources} />
-
-          {!!currentTopic?.questions?.length && (
-            <div className="flex justify-center mt-4">
-              <Button
-                type="primary"
-                classes="max-w-[60%]"
-                onClick={() => {
-                  startQuestionnaire!()
-                }}
-              >
-                START QUESTIONNAIRE
-              </Button>
-            </div>
-          )}
-        </>
+        <QuestionnaireDescription />
       ) : (
         <>
           <QuestionsContainer />
